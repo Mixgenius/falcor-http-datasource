@@ -59,7 +59,12 @@ function request(method, options, context) {
 
     for (prop in options) {
       if (hasOwnProp.call(options, prop)) {
-        config[prop] = options[prop];
+        if (typeof options[prop] === "function") {
+          config[prop] = options[prop]();
+        }
+        else {
+          config[prop] = options[prop];
+        }
       }
     }
 
