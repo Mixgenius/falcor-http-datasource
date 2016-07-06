@@ -59,12 +59,7 @@ function request(method, options, context) {
 
     for (prop in options) {
       if (hasOwnProp.call(options, prop)) {
-        if (typeof options[prop] === "function") {
-          config[prop] = options[prop]();
-        }
-        else {
-          config[prop] = options[prop];
-        }
+        config[prop] = options[prop]
       }
     }
 
@@ -76,6 +71,13 @@ function request(method, options, context) {
     // allow the user to mutate the config open
     if (context.onBeforeRequest != null) {
       context.onBeforeRequest(config);
+    }
+
+    if (config.dynamicHeaders) {
+      var headers = config.dynamicHeaders();
+      for (var k in headers) {
+        config.headers[k] = headers[k];
+      }
     }
 
     // create xhr
@@ -220,7 +222,7 @@ function onXhrLoad(observer, xhr, e) {
 
     } else {
 
-      return _handleXhrError(observer, status, responseData || ('Response code ' + status));
+      return _handleXhrError(observer, status, responseData || new Error('Response code ' + status));
 
     }//if
   }//if
